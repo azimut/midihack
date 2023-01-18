@@ -27,9 +27,9 @@ static unsigned char avg(buffer buffer) {
   return clamp((unsigned char)round(((result * 1.0) / buffer.size)));
 }
 
-buffer *buffer_new(void) {
+buffer buffer_new(void) {
   srandom(time(0));
-  return &(buffer){};
+  return (buffer){};
 }
 
 unsigned char buffer_get(buffer buffer) {

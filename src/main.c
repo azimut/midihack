@@ -43,18 +43,18 @@ int main(void) {
   midi_open();
   printf("listening...\n");
   snd_seq_event_t *ev = NULL;
-  buffer *buf = buffer_new();
+  buffer buf = buffer_new();
   while (snd_seq_event_input(seq_handle, &ev) >= 0) {
 
-    buffer_expire(buf, ev->time.tick);
+    buffer_expire(&buf, ev->time.tick);
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
       if (ev->data.note.velocity == MIDI_NOTE_TO_REPLACE) {
-        ev->data.note.velocity = buffer_get(*buf);
+        ev->data.note.velocity = buffer_get(buf);
         printf("replaced note `%d` velocity with `%d`\n", ev->data.note.note,
                ev->data.note.velocity);
       } else {
-        buffer_add(buf, ev->data.note.velocity, ev->time.tick);
+        buffer_add(&buf, ev->data.note.velocity, ev->time.tick);
       }
     }
 

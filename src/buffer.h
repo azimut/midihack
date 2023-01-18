@@ -15,7 +15,7 @@ typedef struct {
   uint last_seen;
 } buffer;
 
-buffer *buffer_new(void);
+buffer buffer_new(void);
 unsigned char buffer_get(buffer buffer);
 void buffer_add(buffer *buffer, const unsigned char velocity, const uint now);
 void buffer_expire(buffer *buffer, const uint now);
