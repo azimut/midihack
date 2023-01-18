@@ -1,7 +1,7 @@
 CC      := clang
 PKGS	:= alsa
 CFLAGS	:= -Wall -Wextra -std=gnu99 -pedantic $(shell pkg-config --cflags $(PKGS))
-LDFLAGS := $(shell pkg-config --libs $(PKGS))
+LDFLAGS := -lm $(shell pkg-config --libs $(PKGS))
 SRC     := $(wildcard src/*.c)
 HDR     := $(wildcard src/*.h)
 

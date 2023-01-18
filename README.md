@@ -1,6 +1,6 @@
 # midihack
 
-Maps midi `noteon` events with velocity equal to `127` to events with velocity `60`.
+Maps midi `noteon` events with velocity equal to `127` to events with avg velocity in the last 2 tick or `40` if none.
 
 ## Usage
 

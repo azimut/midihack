@@ -1,3 +1,4 @@
+#include "buffer.h"
 #include <alsa/asoundlib.h>
 #include <alsa/seq.h>
 #include <alsa/seq_event.h>
@@ -5,8 +6,7 @@
 #include <stdlib.h>
 
 #define MIDI_NAME "midihack"
-#define MIDI_DEFAULT 60
-#define MAX_MIDI_VELOCITY 127
+#define MIDI_NOTE_TO_REPLACE 127
 
 static snd_seq_t *seq_handle;
 static int in_port;
@@ -43,12 +43,20 @@ int main(void) {
   midi_open();
   printf("listening...\n");
   snd_seq_event_t *ev = NULL;
+  buffer *buf = buffer_new();
   while (snd_seq_event_input(seq_handle, &ev) >= 0) {
-    if (ev->type == SND_SEQ_EVENT_NOTEON &&
-        ev->data.note.velocity == MAX_MIDI_VELOCITY) {
-      printf("converted! note=%d\n", ev->data.note.note);
-      ev->data.note.velocity = MIDI_DEFAULT;
+
+    buffer_expire(buf, ev->time.tick);
+
+    if (ev->type == SND_SEQ_EVENT_NOTEON) {
+      if (ev->data.note.velocity == MIDI_NOTE_TO_REPLACE) {
+        printf("converted! note=%d\n", ev->data.note.note);
+        ev->data.note.velocity = buffer_get(*buf);
+      } else {
+        buffer_add(buf, ev->data.note.velocity, ev->time.tick);
+      }
     }
+
     snd_seq_ev_set_source(ev, out_port);
     snd_seq_ev_set_subs(ev);
     snd_seq_ev_set_direct(ev);
