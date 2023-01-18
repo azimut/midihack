@@ -1,6 +1,6 @@
 # midihack
 
-Catches midi notes with velocity equal to `127`. By replacing them with velocity `60`.
+Maps midi `noteon` events with velocity equal to `127` to events with velocity `60`.
 
 ## Usage
 
@@ -8,6 +8,10 @@ Catches midi notes with velocity equal to `127`. By replacing them with velocity
 $ make
 $ ./midihack
 ```
+
+## Why?
+
+I have an old weighted electronic keyboard that from time to time sends these notes. Among other problems.
 
 ## References
 

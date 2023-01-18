@@ -13,6 +13,7 @@ static int in_port;
 static int out_port;
 
 void midi_open(void) {
+  printf("starting...");
   if ((snd_seq_open(&seq_handle, "default", SND_SEQ_OPEN_INPUT, 0)) < 0) {
     fprintf(stderr, "error: midi_open:snd_seq_open\n");
     exit(1);
@@ -35,10 +36,12 @@ void midi_open(void) {
     fprintf(stderr, "error: midi_open:snd_seq_create_simple_port out_port\n");
     exit(1);
   }
+  printf("done!\n");
 }
 
 int main(void) {
   midi_open();
+  printf("listening...\n");
   snd_seq_event_t *ev = NULL;
   while (snd_seq_event_input(seq_handle, &ev) >= 0) {
     if (ev->type == SND_SEQ_EVENT_NOTEON &&
@@ -46,6 +49,11 @@ int main(void) {
       printf("converted! note=%d\n", ev->data.note.note);
       ev->data.note.velocity = MIDI_DEFAULT;
     }
+    snd_seq_ev_set_source(ev, out_port);
+    snd_seq_ev_set_subs(ev);
+    snd_seq_ev_set_direct(ev);
+    snd_seq_event_output(seq_handle, ev);
+    snd_seq_drain_output(seq_handle);
   }
   return -1;
 }
