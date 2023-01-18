@@ -14,9 +14,3 @@ clean: ; rm -f midihack
 .PHONY: install
 install: midihack
 	cp midihack $(HOME)/bin/
-
-.PHONY: deps
-deps: ; sudo dnf install -y upower-devel
-
-compile_commands.json:
-	bear make
