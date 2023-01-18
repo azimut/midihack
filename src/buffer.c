@@ -1,6 +1,8 @@
 #include "buffer.h"
 #include <assert.h>
+#include <limits.h>
 #include <math.h>
+#include <stdint.h>
 #include <time.h>
 
 static unsigned char min(const unsigned char a, const unsigned char b) {
@@ -29,7 +31,7 @@ static unsigned char avg(buffer buffer) {
 
 buffer buffer_new(void) {
   srandom(time(0));
-  return (buffer){};
+  return (buffer){.size = 0, .last_seen = UINT_MAX};
 }
 
 unsigned char buffer_get(buffer buffer) {
@@ -37,8 +39,10 @@ unsigned char buffer_get(buffer buffer) {
 }
 
 void buffer_expire(buffer *buffer, const uint now) {
-  if ((now - buffer->last_seen) > BUFFER_LIFE)
+  if ((now - buffer->last_seen) > BUFFER_LIFE) {
     buffer->size = 0;
+    buffer->last_seen = UINT_MAX;
+  }
 }
 
 void buffer_add(buffer *buffer, const unsigned char velocity, const uint now) {
