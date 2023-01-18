@@ -15,7 +15,8 @@ typedef struct {
 
 buffer *buffer_new(void);
 unsigned char buffer_get(buffer buffer);
-void buffer_add(buffer *buffer, unsigned char velocity, unsigned int now);
-void buffer_expire(buffer *buffer, unsigned int now);
+void buffer_add(buffer *buffer, const unsigned char velocity,
+                const unsigned int now);
+void buffer_expire(buffer *buffer, const unsigned int now);
 
 #endif /* BUFFER_H */

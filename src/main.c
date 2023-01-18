@@ -50,8 +50,9 @@ int main(void) {
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
       if (ev->data.note.velocity == MIDI_NOTE_TO_REPLACE) {
-        printf("converted! note=%d\n", ev->data.note.note);
         ev->data.note.velocity = buffer_get(*buf);
+        printf("replaced note `%d` velocity with `%d`\n", ev->data.note.note,
+               ev->data.note.velocity);
       } else {
         buffer_add(buf, ev->data.note.velocity, ev->time.tick);
       }
