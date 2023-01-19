@@ -14,7 +14,7 @@ static int out_port;
 
 void midi_open(void) {
   printf("starting...");
-  if ((snd_seq_open(&seq_handle, "default", SND_SEQ_OPEN_INPUT, 0)) < 0) {
+  if ((snd_seq_open(&seq_handle, "default", SND_SEQ_OPEN_DUPLEX, 0)) < 0) {
     fprintf(stderr, "error: midi_open:snd_seq_open\n");
     exit(1);
   }
@@ -44,6 +44,7 @@ int main(void) {
   printf("listening...\n");
   snd_seq_event_t *ev = NULL;
   buffer buf = buffer_new();
+  int err;
   while (snd_seq_event_input(seq_handle, &ev) >= 0) {
 
     buffer_expire(&buf, ev->time.tick);
@@ -61,8 +62,13 @@ int main(void) {
     snd_seq_ev_set_source(ev, out_port);
     snd_seq_ev_set_subs(ev);
     snd_seq_ev_set_direct(ev);
-    snd_seq_event_output(seq_handle, ev);
-    snd_seq_drain_output(seq_handle);
+
+    if ((err = snd_seq_event_output(seq_handle, ev)) < 0) {
+      printf("written = %i (%s)\n", err, snd_strerror(err));
+    }
+    if ((err = snd_seq_drain_output(seq_handle)) < 0) {
+      printf("drain = %i (%s)\n", err, snd_strerror(err));
+    }
   }
   return -1;
 }
