@@ -43,7 +43,7 @@ int main(void) {
   midi_open();
   printf("listening...\n");
   snd_seq_event_t *ev = NULL;
-  buffer buf = buffer_new();
+  Buffer buf = buffer_new();
   int err;
   while (snd_seq_event_input(seq_handle, &ev) >= 0) {
 

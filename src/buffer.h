@@ -13,11 +13,11 @@ typedef struct {
   unsigned char queue[BUFFER_SIZE];
   int size;
   uint last_seen;
-} buffer;
+} Buffer;
 
-buffer buffer_new(void);
-unsigned char buffer_get(buffer buffer);
-void buffer_add(buffer *buffer, const unsigned char velocity, const uint now);
-void buffer_expire(buffer *buffer, const uint now);
+Buffer buffer_new(void);
+unsigned char buffer_get(Buffer buffer);
+void buffer_add(Buffer *buffer, const unsigned char velocity, const uint now);
+void buffer_expire(Buffer *buffer, const uint now);
 
 #endif /* BUFFER_H */

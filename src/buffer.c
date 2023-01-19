@@ -21,7 +21,7 @@ static unsigned char randomize(const char velocity) {
   return clamp(velocity + (random() % 10) - 5);
 }
 
-static unsigned char avg(buffer buffer) {
+static unsigned char avg(Buffer buffer) {
   assert(buffer.size > 0);
   uint result = 0;
   for (int i = 0; i < buffer.size; ++i)
@@ -29,23 +29,23 @@ static unsigned char avg(buffer buffer) {
   return clamp((unsigned char)round(((result * 1.0) / buffer.size)));
 }
 
-buffer buffer_new(void) {
+Buffer buffer_new(void) {
   srandom(time(0));
-  return (buffer){.size = 0, .last_seen = UINT_MAX};
+  return (Buffer){.size = 0, .last_seen = UINT_MAX};
 }
 
-unsigned char buffer_get(buffer buffer) {
+unsigned char buffer_get(Buffer buffer) {
   return (buffer.size == 0) ? randomize(MIDI_DEFAULT) : randomize(avg(buffer));
 }
 
-void buffer_expire(buffer *buffer, const uint now) {
+void buffer_expire(Buffer *buffer, const uint now) {
   if ((now - buffer->last_seen) > BUFFER_LIFE) {
     buffer->size = 0;
     buffer->last_seen = UINT_MAX;
   }
 }
 
-void buffer_add(buffer *buffer, const unsigned char velocity, const uint now) {
+void buffer_add(Buffer *buffer, const unsigned char velocity, const uint now) {
   buffer->last_seen = now;
   if (buffer->size == BUFFER_SIZE) {
     for (int i = 0; i < BUFFER_SIZE - 1; ++i) {
