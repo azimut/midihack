@@ -14,8 +14,8 @@ typedef struct {
 } Buffer;
 
 Buffer buffer_create(void);
-unsigned char buffer_get(Buffer buffer);
-void buffer_add(Buffer *buffer, const unsigned char velocity, const uint now);
+unsigned char buffer_get_velocity(Buffer buffer);
+void buffer_add_velocity(Buffer *buffer, const unsigned char velocity, const uint now);
 void buffer_expire(Buffer *buffer, const uint now);
 
 #endif /* BUFFER_H */

@@ -36,7 +36,7 @@ Buffer buffer_create(void) {
   return (Buffer){.size = 0, .last_seen = UINT_MAX};
 }
 
-unsigned char buffer_get(Buffer buffer) {
+unsigned char buffer_get_velocity(Buffer buffer) {
   return (buffer.size == 0) ? randomize(MIDI_DEFAULT) : randomize(avg(buffer));
 }
 
@@ -47,7 +47,7 @@ void buffer_expire(Buffer *buffer, const uint now) {
   }
 }
 
-void buffer_add(Buffer *buffer, const unsigned char velocity, const uint now) {
+void buffer_add_velocity(Buffer *buffer, const unsigned char velocity, const uint now) {
   buffer->last_seen = now;
   if (buffer->size == BUFFER_SIZE) {
     for (int i = 0; i < BUFFER_SIZE - 1; ++i) {

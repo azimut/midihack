@@ -23,15 +23,13 @@ void midi_start(void) {
   if ((in_port = snd_seq_create_simple_port(
            seq, "in", SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
            SND_SEQ_PORT_TYPE_APPLICATION)) < 0) {
-    fprintf(stderr, "ERROR: in_port = %i (%s)\n", in_port,
-            snd_strerror(in_port));
+    fprintf(stderr, "ERROR: in_port = %i (%s)\n", in_port, snd_strerror(in_port));
     exit(1);
   }
   if ((out_port = snd_seq_create_simple_port(
            seq, "out", SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
            SND_SEQ_PORT_TYPE_APPLICATION)) < 0) {
-    fprintf(stderr, "ERROR: out_port = %i (%s)\n", out_port,
-            snd_strerror(out_port));
+    fprintf(stderr, "ERROR: out_port = %i (%s)\n", out_port, snd_strerror(out_port));
     exit(1);
   }
   printf("done!\n");
@@ -63,11 +61,11 @@ int main(void) {
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
       if (ev->data.note.velocity == midi_max) {
-        ev->data.note.velocity = buffer_get(buf);
+        ev->data.note.velocity = buffer_get_velocity(buf);
         printf("replaced note `%d` velocity with `%d`\n", ev->data.note.note,
                ev->data.note.velocity);
       } else {
-        buffer_add(&buf, ev->data.note.velocity, ev->time.tick);
+        buffer_add_velocity(&buf, ev->data.note.velocity, ev->time.tick);
       }
     }
 
