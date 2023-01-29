@@ -14,7 +14,9 @@ static unsigned char max(const unsigned char a, const unsigned char b) {
 }
 
 static unsigned char clamp(const unsigned char velocity) {
-  return max(min(velocity, MIDI_MAX), MIDI_MIN);
+  const int midi_max = 127;
+  const int midi_min = 0;
+  return max(min(velocity, midi_max), midi_min);
 }
 
 static unsigned char randomize(const char velocity) {
