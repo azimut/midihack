@@ -31,7 +31,7 @@ static unsigned char avg(Buffer buffer) {
   return clamp((unsigned char)round(((result * 1.0) / buffer.size)));
 }
 
-Buffer buffer_new(void) {
+Buffer buffer_create(void) {
   srandom(time(0));
   return (Buffer){.size = 0, .last_seen = UINT_MAX};
 }

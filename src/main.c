@@ -54,7 +54,7 @@ int main(void) {
   midi_start();
   printf("listening...\n");
   snd_seq_event_t *ev = NULL;
-  Buffer buf = buffer_new();
+  Buffer buf = buffer_create();
   const int midi_max = 127;
 
   while (snd_seq_event_input(seq, &ev) >= 0) {
