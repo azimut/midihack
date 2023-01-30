@@ -9,7 +9,7 @@
 
 typedef struct {
   unsigned char queue[BUFFER_SIZE];
-  int size;
+  size_t size;
   uint last_seen;
 } Buffer;
 

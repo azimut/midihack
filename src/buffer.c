@@ -26,7 +26,7 @@ static unsigned char randomize(const char velocity) {
 static unsigned char avg(Buffer buffer) {
   assert(buffer.size > 0);
   uint result = 0;
-  for (int i = 0; i < buffer.size; ++i)
+  for (size_t i = 0; i < buffer.size; ++i)
     result += buffer.queue[i];
   return clamp((unsigned char)round(((result * 1.0) / buffer.size)));
 }
@@ -50,7 +50,7 @@ void buffer_expire(Buffer *buffer, const uint now) {
 void buffer_add_velocity(Buffer *buffer, const unsigned char velocity, const uint now) {
   buffer->last_seen = now;
   if (buffer->size == BUFFER_SIZE) {
-    for (int i = 0; i < BUFFER_SIZE - 1; ++i) {
+    for (size_t i = 0; i < BUFFER_SIZE - 1; ++i) {
       buffer->queue[i] = buffer->queue[i + 1];
     }
     buffer->queue[BUFFER_SIZE - 1] = velocity;
