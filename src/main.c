@@ -12,12 +12,12 @@ static int out_port;
 void print_timestamped(char *text) {
   time_t now_time = time(NULL);
   struct tm *now_tm = localtime(&now_time);
-  char output[50];
-  if (strftime(output, sizeof(output), "%T", now_tm) <= 0) {
-    fprintf(stderr, "ERROR: strftime %s\n", output);
+  char timestamp[50];
+  if (strftime(timestamp, sizeof(timestamp), "%T", now_tm) <= 0) {
+    fprintf(stderr, "ERROR: strftime %s\n", timestamp);
     exit(1);
   }
-  printf("%s - %s", output, text);
+  printf("%s - %s", timestamp, text);
 }
 
 void midi_start(void) {
@@ -71,14 +71,15 @@ void print_replaced_event(snd_seq_event_t *ev) {
 }
 
 int main(void) {
-  midi_start();
   snd_seq_event_t *ev = NULL;
   Buffer buf = buffer_create();
   const int midi_max = 127;
 
+  midi_start();
   print_timestamped("listening...\n");
 
   while (snd_seq_event_input(seq, &ev) >= 0) {
+
     buffer_expire(&buf, ev->time.tick);
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
