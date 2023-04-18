@@ -59,10 +59,11 @@ void midi_send(snd_seq_event_t *ev) {
   }
 }
 
-void print_replaced_event(snd_seq_event_t *ev) {
+void print_event(snd_seq_event_t *ev) {
   char msg[50];
-  int err = sprintf(msg, "replaced note=%u velocity=%u\n", ev->data.note.note,
-                    ev->data.note.velocity);
+  int err;
+  err = sprintf(msg, "note =%3u velocity =%3u\n", ev->data.note.note,
+                ev->data.note.velocity);
   if (err <= 0) {
     fprintf(stderr, "ERROR: sprintf\n");
     exit(1);
@@ -84,10 +85,15 @@ int main(void) {
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
       if (ev->data.note.velocity == midi_max) {
+        printf("(!) ");
         ev->data.note.velocity = buffer_get_velocity(buf);
-        print_replaced_event(ev);
+        print_event(ev);
       } else {
-        buffer_add_velocity(&buf, ev->data.note.velocity, ev->time.tick);
+#ifdef DEBUG
+        print_event(ev);
+#endif
+        if (ev->data.note.velocity != 1)
+          buffer_add_velocity(&buf, ev->data.note.velocity, ev->time.tick);
       }
     }
 
