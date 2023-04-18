@@ -9,8 +9,19 @@ static snd_seq_t *seq;
 static int in_port;
 static int out_port;
 
+void print_timestamped(char *text) {
+  time_t now_time = time(NULL);
+  struct tm *now_tm = localtime(&now_time);
+  char output[50];
+  if (strftime(output, sizeof(output), "%T", now_tm) <= 0) {
+    fprintf(stderr, "ERROR: strftime %s\n", output);
+    exit(1);
+  }
+  printf("%s - %s", output, text);
+}
+
 void midi_start(void) {
-  printf("starting...");
+  print_timestamped("starting midi device...\n");
   int err;
   if ((err = snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0)) < 0) {
     fprintf(stderr, "ERROR: open = %i (%s)\n", err, snd_strerror(err));
@@ -32,7 +43,7 @@ void midi_start(void) {
     fprintf(stderr, "ERROR: out_port = %i (%s)\n", out_port, snd_strerror(out_port));
     exit(1);
   }
-  printf("done!\n");
+  print_timestamped("done!\n");
 }
 
 void midi_send(snd_seq_event_t *ev) {
@@ -48,22 +59,32 @@ void midi_send(snd_seq_event_t *ev) {
   }
 }
 
+void print_replaced_event(snd_seq_event_t *ev) {
+  char msg[50];
+  int err = sprintf(msg, "replaced note=%u velocity=%u\n", ev->data.note.note,
+                    ev->data.note.velocity);
+  if (err <= 0) {
+    fprintf(stderr, "ERROR: sprintf\n");
+    exit(1);
+  }
+  print_timestamped(msg);
+}
+
 int main(void) {
   midi_start();
-  printf("listening...\n");
   snd_seq_event_t *ev = NULL;
   Buffer buf = buffer_create();
   const int midi_max = 127;
 
-  while (snd_seq_event_input(seq, &ev) >= 0) {
+  print_timestamped("listening...\n");
 
+  while (snd_seq_event_input(seq, &ev) >= 0) {
     buffer_expire(&buf, ev->time.tick);
 
     if (ev->type == SND_SEQ_EVENT_NOTEON) {
       if (ev->data.note.velocity == midi_max) {
         ev->data.note.velocity = buffer_get_velocity(buf);
-        printf("replaced note `%d` velocity with `%d`\n", ev->data.note.note,
-               ev->data.note.velocity);
+        print_replaced_event(ev);
       } else {
         buffer_add_velocity(&buf, ev->data.note.velocity, ev->time.tick);
       }
